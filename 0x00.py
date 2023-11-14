@@ -11,7 +11,6 @@ import subprocess
 import requests
 import sys 
 import platform
-import psutil
 import pyfiglet
 import getpass
 import socket
@@ -88,6 +87,7 @@ class colors:
 
 #----[ Connections ]----
 class Connection:
+    import psutil
     
     global connections
     # Get all network connections
@@ -180,40 +180,76 @@ class MainActivity:
 {colors.green} ************************************       
 
 """
+
+    def usage():
+        return f"""{colors.red}
+you lost Arguments
+
+try: ' 0x00 --help '
+"""
+
+    def helpConsole(dictNumber):
+        dictX = {
+            'commands' : [
+                {
+                    'command' : '--help',
+                    'info' : 'show this message',
+                    'usage' : '0x00 --help'
+                },
+                {
+                    'command' : '--pool',
+                    'info' : 'start a Request session',
+                    'usage' : '0x00 --pool https://www.example.com/ [--status: to see status code[--json: to see json data]]'
+                },
+                {
+                    'command' : ''
+                }
+            ]
+        }
+        
+        return dictX['commands'][dictNumber]
     
     def main():
         
         print(MainActivity.banner())
         
+        if len(argv) == 1:
+            pass
+        
         if "--pool" in argv:
-            url = argv[argv.index('--pool')+1]
-            pov = argv[argv.index('--pool')+2]
+            try:
+                url = argv[argv.index('--pool')+1]
+                if '--status' in argv:
+                    try:
+                        reqStatus = requests.get(url).status_code
+                        print(f'\n{colors.green}{reqStatus}\n')
+                    
+                    except Exception as ERS:
+                        print(f'\n{colors.red}{ERS}\n')
+                        
+                elif '--json' in argv:
+                    try:
+                        reqJson = requests.get(url).json()
+                        print(f'\n{colors.green}{reqJson}\n')
+                    
+                    except Exception as ERJ:
+                        print(f'\n{colors.red}{ERJ}\n')
+                        
+                else:
+                    try:
+                        reqStatus = requests.get(url).status_code
+                        print(f'\n{colors.green}{reqStatus}\n')
+                    
+                    except Exception as ERS:
+                        print(f'\n{colors.red}{ERS}\n')
+                    
+            except Exception as EUP:
+                print(f'\n{colors.red}{EUP}{colors.white}\n')
+                pass
             
-            if pov == '--status':
-                try:
-                    reqStatus = requests.get(url).status_code
-                    print(f'\n{colors.green}{reqStatus}\n')
-                
-                except Exception as ERS:
-                    print(f'\n{colors.red}{ERS}\n')
-                    
-            elif pov == '--json':
-                try:
-                    reqJson = requests.get(url).json()
-                    print(f'\n{colors.green}{reqJson}\n')
-                
-                except Exception as ERJ:
-                    print(f'\n{colors.red}{ERJ}\n')
-                    
-            else:
-                try:
-                    reqStatusx = requests.get(url).status_code
-                    print(f'\n{colors.green}{reqStatusx}\n')
-                
-                except Exception as ERSX:
-                    print(f'\n{colors.red}{ERSX}\n')
+            
 
-        elif "--figlet" in argv:
+        if "--figlet" in argv:
             if "-f" in argv:
                 fontForfig = argv[argv.index('-f')+1]
                 textToFig = argv[argv.index('--figlet')+1]
@@ -229,7 +265,7 @@ class MainActivity:
                 print(pyfiglet.figlet_format(textToFix0))
                 print()
                 
-        elif "--sysinfo" in argv:
+        if "--sysinfo" in argv:
             host = socket.gethostname()
 
             dataSYS = platform.uname()
@@ -251,7 +287,7 @@ class MainActivity:
 {colors.green}sysname:{colors.yellow} {sysName}
 """)
         
-        elif "--getoutput" in argv:
+        if "--getoutput" in argv:
             command = argv[argv.index('--getoutput')+1]
             data = subprocess.getoutput(command)
             
@@ -259,7 +295,7 @@ class MainActivity:
             print(f"\n{colors.green}{data}\n")
             print()
             
-        elif "--net-scanner" in argv:
+        if "--net-scanner" in argv:
             if not osType == 'Windows':
                 print()
                 print(f'\n{colors.red}Your OS is not Windows !\n')
@@ -280,5 +316,10 @@ class MainActivity:
                 Connection.connectionStatus()
                 print(f"\n{colors.green}type\n")
                 Connection.connectionType()
+                
 
-MainActivity.main()
+if __name__ == '__main__':
+    try:
+        MainActivity.main()
+    except KeyboardInterrupt:
+        exit()
