@@ -14,6 +14,8 @@ import platform
 import pyfiglet
 import getpass
 import socket
+import random
+import hashlib
 
 # For CMD to Show Colors
 os.system('')
@@ -157,6 +159,162 @@ type :: {colors.yellow}{connects.type} {colors.yellow}({Connection.typeNum}""")
 fields :: {colors.yellow}{connects._fields} {colors.yellow}({Connection.fieldsNum}""")        
             
         Connection.fieldsNum = 0
+        
+#----[ Hash ]----
+# This Class Created By BrupRocket Framework => https://github.com/Zrexer/BrupRocket
+class Hasher:
+    def __init__(self) -> None:
+
+            self.hashlib = hashlib
+            self.argv = sys.argv
+            self.pool = requests
+            self.rand = random
+            self.socket = socket
+            self.hashlist = ['sha1', 'sha256', 'sha224', 'sha512', 'sha384', 'sha3_256', 'sha3_224', 'sha3_512', 'sha3_384']
+        
+    def createHasher(self, text : str, type_of_encrypt : str):
+        """
+        Hash Creator
+        ~~~~~~~~~~~~~
+        ```
+        from BrupRocket import BrupRocket as br
+        
+        app = br()
+        data = app.createHasher(text="Hello world", type_of_encrypt="md5")
+        print(data)
+        ```
+        
+        Available Type of hash: 
+        
+        `md5`
+        `sha1`
+        `sha256`
+        `sha224`
+        `sha512`
+        `sha384`
+        `sha3_256`
+        
+        or you can select a random type , just use "random" on parameter.
+        
+        """
+        
+        t = type_of_encrypt
+        
+        if t == "md5":
+            md5 = self.hashlib.md5()
+            md5.update(text.encode())
+            return md5.hexdigest()
+        
+        elif (
+            t == "sha1"
+            ):
+            sha1 = self.hashlib.sha1()
+            sha1.update(
+                text.encode()
+                )
+            return (
+                sha1.hexdigest()
+                )
+        
+        elif (
+            t == "sha256"
+            ):
+            sha256 = self.hashlib.sha256()
+            sha256.update(
+                text.encode()
+                )
+            return (
+                sha256.hexdigest()
+                )
+        
+        elif (
+            t == "sha224"
+            ):
+            sha224 = self.hashlib.sha224()
+            sha224.update(
+                text.encode()
+                )
+            return (
+                sha224.hexdigest()
+                )
+        
+        elif (
+            t == "sha512"
+            ):
+            sha512 = self.hashlib.sha512()
+            sha512.update(
+                text.encode()
+                )
+            return (
+                sha512.hexdigest()
+                )
+        
+        elif (
+            t == "sha384"
+            ):
+            sha384 = self.hashlib.sha384()
+            sha384.update(
+                text.encode()
+                )
+            return (
+                sha384.hexdigest()
+                )
+        
+        elif (
+            t == "sha3_256"
+            ):
+            sha3_256 = self.hashlib.sha3_256()
+            sha3_256.update(
+                text.encode()
+                )
+            return (
+                sha3_256.hexdigest()
+                )
+        
+        elif (
+            t == "sha3_224"
+            ):
+            sha3_224 = self.hashlib.sha3_224()
+            sha3_224.update(
+                text.encode()
+                )
+            return (
+                sha3_224.hexdigest()
+                )
+        
+        elif (
+            t == "sha3_512"
+            ):
+            sha3_512 = self.hashlib.sha3_512()
+            sha3_512.update(
+                text.encode()
+            )
+            return (
+                sha3_512.hexdigest()
+            )
+            
+        elif (
+            t == "sha3_384"
+        ):
+            sha3_384 = self.hashlib.sha3_384()
+            sha3_384.update(
+                text.encode()
+            )
+            return (
+                sha3_384.hexdigest()
+            )
+            
+        elif (
+            t == "random"
+        ):
+            result = (
+                random.choice(self.hashlist)
+            )
+            
+            return Hasher().createHasher(text=text, type_of_encrypt=result)
+
+
+
 
 #----[ commands ]----
 argv = sys.argv
@@ -316,6 +474,17 @@ try: ' 0x00 --help '
                 Connection.connectionStatus()
                 print(f"\n{colors.green}type\n")
                 Connection.connectionType()
+                
+        if "--json-hasher" in argv:
+            url = argv[argv.index('--json-hasher')+1]
+            typeENC = argv[argv.index('--json-hasher')+2]
+            try:
+                req = requests.get(url).json()
+                enc = Hasher().createHasher(req, typeENC)
+                print(f'\n{colors.green}{enc}\n')
+            except Exception as E:
+                print(f'\n{colors.red}{E}\n')
+                pass
                 
 
 if __name__ == '__main__':
